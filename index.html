@@ -1345,17 +1345,12 @@ async function sendChat(){
     const subjectLabel = S.currentSubj ? (LABELS[S.currentSubj]||S.currentSubj) : 'their subjects';
     const systemPrompt = `You are FocusForge GPT, a friendly and knowledgeable study assistant for students at GEMS Our Own Indian School (OIS), Al Quoz, Dubai. You are talking to ${S.name||'a student'} who is in Grade ${S.grade||'school'} and is currently studying ${subjectLabel}. Keep your answers concise, encouraging, and tailored to their grade level. Use simple language and, where helpful, give examples. Never be condescending. If they ask something outside academics, gently redirect to studying.`;
 
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AQ.Ab8RN6KHW8ul4z5rtl_swNZoPw4q5BwRbw_xfuMz66WJ_WmHFw`, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
+    const response = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        system_instruction: { parts: [{ text: systemPrompt }] },
-        contents: chatHistory.map(m => ({
-          role: m.role === 'assistant' ? 'model' : 'user',
-          parts: [{ text: m.content }]
-        }))
+        system: systemPrompt,
+        messages: chatHistory
       })
     });
 
